@@ -29,6 +29,7 @@ public class AndroidChanView extends Activity {
 			setResult(RESULT_CANCELED);
 		}
 
+		/* only for testing */
 		RssCursor rc = new RssCursor("http://api.wassr.jp/channel_message/list.rss?name_en=android");
 		try {
 			rc.update();
