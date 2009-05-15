@@ -17,7 +17,7 @@ import android.util.Xml;
 public class RssCursor {
 
 	private String rssUrl;
-	private String columnames[] = { "_id", LiveFolders.NAME, LiveFolders.DESCRIPTION };
+	private String columnames[] = { LiveFolders._ID, LiveFolders.NAME, LiveFolders.DESCRIPTION };
 	private String anonymous = "anonymous";
 	private MatrixCursor myCursor;
 
