@@ -42,41 +42,49 @@ public class RssCursor {
 		_id = 1;
 		while (xpp.next() != XmlPullParser.END_DOCUMENT)
 		{
-			if (inItem && inAuthor && xpp.getEventType() == XmlPullParser.TEXT)
+			int eventtype = xpp.getEventType();
+			switch (eventtype)
 			{
-				author = new String(xpp.getText());
-			}
-			else if (inItem && inContent && xpp.getEventType() == XmlPullParser.TEXT)
-			{
-				MatrixCursor.RowBuilder row = myCursor.newRow();
-				String desc = new String(xpp.getText());
-				Log.v("RssCursor", _id + " " + author + " " + desc);
-				row.add(_id);
-				row.add(author);
-				row.add(desc);
-				_id = _id + 1;
-				author = anonymous;
-//				if (myCursor.getCount() == 10)
-//					break;
-			}
-			else if (xpp.getEventType() == XmlPullParser.START_TAG)
-			{
-				if (xpp.getName().equals("item"))
+			case XmlPullParser.TEXT:
+				if (inItem && inAuthor)
+				{
+					author = new String(xpp.getText());
+				}
+				else if (inItem && inContent)
+				{
+					MatrixCursor.RowBuilder row = myCursor.newRow();
+					String desc = new String(xpp.getText());
+					Log.v("RssCursor", _id + " " + author + " " + desc);
+					row.add(_id);
+					row.add(author);
+					row.add(desc);
+					_id = _id + 1;
+					author = anonymous;
+//					if (myCursor.getCount() == 10)
+//						return myCursor;
+				}
+				break;
+			case XmlPullParser.START_TAG:
+				String name = xpp.getName();
+				if (name.equals("item"))
 					inItem = true;
-				else if (xpp.getName().equals("description"))
+				else if (name.equals("description"))
 					inContent = true;
-				else if (xpp.getName().equals("author"))
+				else if (name.equals("author"))
 					inAuthor = true;
-			}
-			else if (xpp.getEventType() == XmlPullParser.END_TAG)
-			{
-				if (xpp.getName().equals("item"))
+				break;
+			case XmlPullParser.END_TAG:
+				name = xpp.getName();
+				if (name.equals("item"))
 					inItem = false;
-				else if (xpp.getName().equals("description"))
+				else if (name.equals("description"))
 					inContent = false;
-				else if (xpp.getName().equals("author"))
+				else if (name.equals("author"))
 					inAuthor = false;
-			}
+				break;
+			default:
+				break;
+			};
 		}
 		return myCursor;
 	}

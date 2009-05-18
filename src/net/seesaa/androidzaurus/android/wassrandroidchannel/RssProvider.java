@@ -3,14 +3,16 @@ package net.seesaa.androidzaurus.android.wassrandroidchannel;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import net.seesaa.androidzaurus.android.wassrandroidchannel.WassrRss.WassrItems;
+
 import org.xmlpull.v1.XmlPullParserException;
 
-import net.seesaa.androidzaurus.android.wassrandroidchannel.WassrRss.WassrItems;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Debug;
 
 public class RssProvider extends ContentProvider {
 	private static final String WassrRssUrl = "http://api.wassr.jp/channel_message/list.rss?name_en=android";
@@ -62,8 +64,10 @@ public class RssProvider extends ContentProvider {
 		RssCursor rc = new RssCursor(RssUrl);
 		Cursor c;
 		try {
+			Debug.startMethodTracing("/data/anr/rssprovider.trace");
 			c = rc.update();
 			c.setNotificationUri(getContext().getContentResolver(), uri);
+			Debug.stopMethodTracing();
 			return c;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
